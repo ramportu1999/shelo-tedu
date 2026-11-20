@@ -277,7 +277,7 @@ function initTasks(app) {
       h('button', { type: 'button', onclick: exportCSV }, 'ייצוא לקובץ CSV (לאקסל)'),
       h('button', { type: 'button', onclick: () => download(`shelo-tedu-backup-${today()}.json`, S.toBackup(state), 'application/json') }, 'שמירת קובץ גיבוי'),
       h('label', { class: 'button' }, 'שחזור מקובץ גיבוי', fileInput),
-      h('button', { type: 'button', onclick: () => window.print() }, 'הדפסה'),
+      h('button', { type: 'button', onclick: printTasks }, 'הדפסה'),
       h(
         'button',
         {
@@ -430,6 +430,22 @@ function renderOrphans() {
       ),
     ),
   );
+}
+
+// הדפסה של הצ׳קליסט בלבד (Ctrl+P רגיל מדפיס את כל העמוד)
+function printTasks() {
+  const tasks = document.getElementById('tasks');
+  if (!document.querySelector('.print-heading')) {
+    const title = document.querySelector('h1')?.textContent || '';
+    tasks.before(h('p', { class: 'print-heading print-only' }, `צ׳קליסט מעקב · ${title}`));
+  }
+  document.body.classList.add('print-tasks');
+  const done = () => {
+    document.body.classList.remove('print-tasks');
+    window.removeEventListener('afterprint', done);
+  };
+  window.addEventListener('afterprint', done);
+  window.print();
 }
 
 function exportCSV() {

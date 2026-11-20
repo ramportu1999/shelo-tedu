@@ -65,6 +65,7 @@ npx playwright install chromium
 npm run dev          # בנייה ותצוגה ב-http://localhost:8080
 npm test             # בנייה + בדיקות יחידה + בדיקות דפדפן (נייד ומחשב)
 npm run check:links  # בדיקת הקישורים החיצוניים (gov.il חוסם בדיקה אוטומטית, ולכן קישורים שלו בודקים ידנית)
+npm run test:browsers  # בדיקות הדפדפן גם על Safari (WebKit). דורש: npx playwright install webkit
 ```
 
 מה נבדק אוטומטית:

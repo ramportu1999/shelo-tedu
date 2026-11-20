@@ -66,6 +66,25 @@ test('עמוד הבית: ארבעה מדריכים, קצת עליי ועמוד �
   await expect(page.locator('h1')).toHaveText('מתחתנים אחרי אובדן?');
 });
 
+test('מקלדת: קישור דילוג לתוכן, ושינוי סטטוס בלי עכבר', async ({ page, browserName }) => {
+  test.skip(browserName === 'webkit', 'ב-Safari מקש Tab לא עובר על קישורים כברירת מחדל');
+  await page.goto('siddurim/');
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('link', { name: 'דילוג לתוכן' })).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('main')).toBeFocused();
+  const select = page.locator('#tasks-app .task-card select').first();
+  await select.focus();
+  await page.keyboard.press('ArrowDown');
+  await page.reload();
+  await expect(page.locator('#tasks-app .task-card select').first()).toHaveValue('doing');
+});
+
+test('חיצים דקורטיביים לא נקראים בקורא מסך', async ({ page }) => {
+  await page.goto('');
+  await expect(page.locator('main .cards a.card').first()).toHaveAccessibleName('הלוויה מסמכים, תיאום קבורה, תכנון הטקס ומודעת אבל לעריכה.');
+});
+
 test('קישור עמוק לסעיף מגיע לסעיף', async ({ page }) => {
   await page.goto('siddurim/#חשבונות-בנק');
   await expect(page.locator('[id="חשבונות-בנק"]')).toBeInViewport();

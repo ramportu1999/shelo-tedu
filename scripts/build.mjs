@@ -151,7 +151,7 @@ function renderDownload() {
   const kb = Math.max(1, Math.round(statSync(join(ROOT, 'public', file)).size / 1024));
   return `<div class="download">
   <figure class="download-preview">
-    <img src="${BASE}images/modaat-evel-preview.png" alt="תצוגה מקדימה של תבנית מודעת האבל" width="550" height="712" loading="lazy">
+    <img src="${BASE}images/modaat-evel-preview.webp" alt="תצוגה מקדימה של תבנית מודעת האבל" width="440" height="570" loading="lazy">
     <figcaption><strong>תצוגה מקדימה</strong> · תבנית עם שדות לשם, פרטי הלוויה ופרטי השבעה.</figcaption>
   </figure>
   <a class="button download-link" href="${BASE}${file}" download="תבנית מודעת אבל.docx"><strong>להורדה ולעריכה ב־Word</strong><span class="sep"> · </span><span>תבנית מודעת אבל</span> <span class="file-meta">(<bdi dir="ltr">DOCX, ${kb}KB</bdi>)</span></a>
@@ -210,9 +210,14 @@ function layout({ key, meta, main, hasScript }) {
 <meta property="og:type" content="website">
 <meta property="og:locale" content="he_IL">
 <meta property="og:site_name" content="${escapeHtml(site.name)}">
-<meta property="og:title" content="${escapeHtml(isHome ? site.name : meta.title)}">
+<meta property="og:title" content="${escapeHtml(isHome ? site.name : `${meta.title} | ${site.name}`)}">
 <meta property="og:description" content="${escapeHtml(meta.description)}">
 <meta property="og:url" content="${escapeHtml(canonical)}">
+<meta property="og:image" content="${escapeHtml(site.siteUrl)}images/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="שלא תדעו. אבל אם כבר יודעים, לא צריך להבין הכול לבד.">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#f8f4ee">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="icon" href="${BASE}favicon.svg" type="image/svg+xml">

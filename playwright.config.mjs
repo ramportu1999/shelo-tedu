@@ -16,5 +16,12 @@ export default defineConfig({
   projects: [
     { name: 'mobile', use: { ...devices['Pixel 5'], defaultBrowserType: 'chromium' } },
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
+    // דפדפנים נוספים (npm run test:browsers). דורש: npx playwright install webkit firefox
+    ...(process.env.ALL_BROWSERS
+      ? [
+          { name: 'iphone-safari', use: { ...devices['iPhone 13'] } },
+          { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+        ]
+      : []),
   ],
 });
