@@ -20,6 +20,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
     "@fontsource-variable/assistant": "^5.3.0",
+    "@fontsource-variable/frank-ruhl-libre": "^5.3.0",
     "@playwright/test": "^1.65.1",
     "marked": "^18.2.1"
   }

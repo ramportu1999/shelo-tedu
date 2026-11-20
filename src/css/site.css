@@ -31,6 +31,8 @@
   --radius: 14px;
   --shadow: 0 1px 2px rgb(60 45 30 / 6%), 0 2px 10px rgb(60 45 30 / 5%);
   --wrap: 44rem;
+  --note-border: #c8a27c;
+  --heading-font: inherit;
   color-scheme: light;
 }
 
@@ -63,7 +65,7 @@ body {
   padding-inline: 1.125rem;
 }
 
-h1, h2, h3 { line-height: 1.25; font-weight: 700; color: var(--text); }
+h1, h2, h3 { line-height: 1.25; font-weight: 700; color: var(--text); font-family: var(--heading-font); }
 h1 { font-size: clamp(1.9rem, 6vw, 2.6rem); margin: 0 0 0.75rem; }
 h2 { font-size: 1.45rem; margin: 2.75rem 0 0.75rem; }
 h3 { font-size: 1.15rem; margin: 1.75rem 0 0.5rem; }
@@ -255,7 +257,7 @@ main { padding-top: 2rem; }
   margin: 1.25rem 0 1.5rem;
   padding: 1rem 1.25rem;
   background: var(--note);
-  border-inline-start: 4px solid #c8a27c;
+  border-inline-start: 4px solid var(--note-border);
   border-radius: 6px var(--radius) var(--radius) 6px;
 }
 [dir='rtl'] .note { border-radius: var(--radius) 6px 6px var(--radius); }
@@ -313,36 +315,29 @@ main { padding-top: 2rem; }
 .button-danger { border-color: #b4483a; color: #8d2f23; }
 .button-danger:hover { background: #fbecea; }
 
-/* הורדת מודעת אבל */
+/* הורדת מודעת אבל (תבנית לרוחב) */
 .download {
   display: grid;
-  gap: 1rem;
+  gap: 0.9rem;
   margin: 1.5rem 0;
   padding: 1.25rem;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
 }
-@media (min-width: 40rem) {
-  .download { grid-template-columns: 11rem 1fr; align-items: center; }
-}
 .download-preview { margin: 0; display: grid; gap: 0.5rem; }
 .download-preview img {
   width: 100%;
-  max-width: 11rem;
+  max-width: 30rem;
   height: auto;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: #fff;
+  box-shadow: var(--shadow);
 }
 .download-preview figcaption { font-size: 0.95rem; color: var(--muted); line-height: 1.5; }
-@media (min-width: 40rem) {
-  .download-preview { display: contents; }
-  .download-preview figcaption { grid-column: 2; grid-row: 2; }
-  .download-link { grid-column: 2; grid-row: 1; justify-self: start; }
-  .download-preview img { grid-row: 1 / span 2; }
-}
 .download-link {
+  justify-self: start;
   background: var(--accent);
   color: #fff;
   flex-wrap: wrap;
@@ -352,7 +347,7 @@ main { padding-top: 2rem; }
 .download-link:hover { background: var(--accent-strong); color: #fff; }
 .file-meta { font-weight: 400; font-size: 0.9rem; opacity: 0.9; }
 @media (max-width: 39.99rem) {
-  .download-link { flex-direction: column; gap: 0; }
+  .download-link { justify-self: stretch; flex-direction: column; gap: 0; }
   .download-link .sep { display: none; }
 }
 
@@ -503,3 +498,308 @@ select { cursor: pointer; }
   a.external::after { content: ''; }
   .wrap { max-width: none; }
 }
+
+/* =====================================================================
+   עיצוב 2026-11: גופן כותרות, פלטות צבע, ניווט צדדי ושיפורים כלליים
+   ===================================================================== */
+
+@font-face {
+  font-family: 'Frank Ruhl Libre';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300 900;
+  src: url('../fonts/frank-ruhl-hebrew.woff2') format('woff2');
+  unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
+}
+@font-face {
+  font-family: 'Frank Ruhl Libre';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300 900;
+  src: url('../fonts/frank-ruhl-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+2000-206F, U+20AC, U+2122, U+FEFF, U+FFFD;
+}
+[data-headings='serif'] { --heading-font: 'Frank Ruhl Libre', 'David', 'Times New Roman', serif; }
+[data-headings='serif'] .brand,
+[data-headings='serif'] .card-title,
+[data-headings='serif'] .pager-title { font-family: var(--heading-font); }
+[data-headings='serif'] h1, [data-headings='serif'] h2 { font-weight: 600; letter-spacing: 0; }
+
+/* ---------- פלטות צבע ---------- */
+/* מרווה ואפרסק: בהיר ורענן, עם חום עדין בהערות האישיות */
+[data-palette='sage'] {
+  --bg: #f7faf8;
+  --surface: #ffffff;
+  --text: #22302b;
+  --muted: #53625c;
+  --accent: #2c7563;
+  --accent-strong: #1f5848;
+  --accent-soft: #e2f0ea;
+  --border: #d9e5df;
+  --note: #fdf1e4;
+  --note-border: #eab07a;
+}
+/* טרקוטה חמים: קרם חמים ואדמה רכה */
+[data-palette='terracotta'] {
+  --bg: #fdf8f3;
+  --surface: #ffffff;
+  --text: #2f2925;
+  --muted: #665a52;
+  --accent: #a84d33;
+  --accent-strong: #833824;
+  --accent-soft: #f9e6dc;
+  --border: #eedfd3;
+  --note: #fbefe6;
+  --note-border: #df9f82;
+}
+/* כחול רגוע: שקט ונקי, עם חום בהערות */
+[data-palette='blue'] {
+  --bg: #f6f8fb;
+  --surface: #ffffff;
+  --text: #1e2935;
+  --muted: #536170;
+  --accent: #2d5f8b;
+  --accent-strong: #204668;
+  --accent-soft: #e3edf7;
+  --border: #dbe3ec;
+  --note: #fbf3e7;
+  --note-border: #e2b67f;
+}
+
+/* ---------- שיפורים כלליים ---------- */
+/* מקור הקישור ("· משרד הבריאות") בצבע משני */
+.link-src { color: var(--muted); font-weight: 400; }
+/* קו מפריד עדין בין סעיפים במדריכים ארוכים */
+.guide > h2:not(.toc-title) {
+  margin-top: 2.75rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--border);
+}
+.guide-header + .toc + h2, .guide-header + h2 { border-top: 0; padding-top: 0; }
+/* הערה בצ׳קליסט נפתחת רק כשצריך */
+.note-toggle {
+  justify-self: start;
+  min-height: 2.5rem;
+  font-size: 0.95rem;
+  border-style: dashed;
+}
+
+/* כפתורי מדריך קודם / הבא */
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+.pager-link {
+  display: grid;
+  gap: 0.1rem;
+  max-width: 48%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  text-decoration: none;
+  color: var(--text);
+}
+.pager-link:hover { border-color: var(--accent); color: var(--text); }
+.pager-next { text-align: left; margin-inline-start: auto; }
+.pager-label { font-size: 0.85rem; color: var(--muted); }
+.pager-title { font-weight: 700; color: var(--accent-strong); line-height: 1.3; }
+.pager-prev .pager-label::before { content: '→ '; content: '→ ' / ''; }
+.pager-next .pager-label::after { content: ' ←'; content: ' ←' / ''; }
+
+/* ---------- מבנה: כרטיסים (ברירת המחדל) ---------- */
+[data-layout='cards'] .sidebar,
+[data-layout='cards'] .menu,
+[data-layout='cards'] .pager { display: none !important; }
+
+/* ---------- מבנה: ניווט בצד ---------- */
+[data-layout='sidebar'] .more-guides { display: none !important; }
+
+.header-actions { display: flex; align-items: center; gap: 1rem; }
+.menu { position: relative; }
+.menu > summary {
+  list-style: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.5rem;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text);
+}
+.menu > summary::-webkit-details-marker { display: none; }
+.menu > summary::before { content: '☰'; content: '☰' / ''; font-size: 1.05rem; color: var(--accent); }
+.menu[open] > summary { border-color: var(--accent); }
+.menu-panel {
+  position: absolute;
+  inset-inline-end: 0;
+  top: calc(100% + 0.5rem);
+  width: min(20rem, calc(100vw - 2rem));
+  max-height: calc(100vh - 6rem);
+  overflow: auto;
+  padding: 1rem 1.1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 30px rgb(40 30 20 / 14%);
+  z-index: 20;
+}
+
+.sidenav-label {
+  margin: 0 0 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.sidenav-list { list-style: none; padding: 0; margin: 0; }
+.sidenav-list li { margin: 0; }
+.sidenav-list > li > a {
+  display: block;
+  padding: 0.45rem 0.75rem;
+  border-radius: 10px;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.sidenav-list > li > a:hover { background: var(--accent-soft); color: var(--accent-strong); }
+.sidenav-list > li > a[aria-current='page'] {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+.sidenav-more {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+.sidenav-more > li > a { font-weight: 400; font-size: 1rem; color: var(--muted); }
+.sidenav-toc {
+  list-style: none;
+  margin: 0.3rem 0 0.6rem;
+  padding: 0;
+  padding-inline-start: 0.9rem;
+  border-inline-start: 2px solid var(--border);
+  margin-inline-start: 0.75rem;
+}
+.sidenav-toc li { margin: 0; }
+.sidenav-toc a {
+  display: block;
+  padding: 0.28rem 0.6rem;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: var(--muted);
+  text-decoration: none;
+  border-inline-start: 2px solid transparent;
+  margin-inline-start: calc(-0.9rem - 2px);
+  padding-inline-start: calc(0.9rem + 0.6rem);
+}
+.sidenav-toc a:hover { color: var(--accent-strong); }
+.sidenav-toc a[aria-current='location'] {
+  color: var(--accent-strong);
+  font-weight: 700;
+  border-inline-start-color: var(--accent);
+}
+
+.sidebar { display: none; }
+
+/* בנייד ובטאבלט: תפריט בכותרת, כותרת דביקה */
+@media (max-width: 63.99rem) {
+  [data-layout='sidebar'] .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 15;
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: blur(6px);
+  }
+  [data-layout='sidebar'] .header-contact { display: none; }
+}
+/* במחשב: ניווט קבוע בצד, בלי תפריט ובלי תוכן העניינים שבראש המדריך */
+@media (min-width: 64rem) {
+  [data-layout='sidebar'] .menu { display: none; }
+  [data-layout='sidebar'] .sidebar {
+    display: block;
+    position: sticky;
+    top: 1.5rem;
+    align-self: start;
+    max-height: calc(100vh - 3rem);
+    overflow: auto;
+    padding: 2rem 0 2rem;
+  }
+  [data-layout='sidebar'] .page-layout {
+    display: grid;
+    grid-template-columns: 16rem minmax(0, 1fr);
+    gap: 3rem;
+    max-width: 70rem;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+  [data-layout='sidebar'] .page-layout > main { margin-inline: 0; padding-inline: 0; }
+  [data-layout='sidebar'] .site-header .wrap { max-width: 70rem; padding-inline: 1.5rem; }
+  [data-layout='sidebar'] .site-footer .wrap { max-width: 70rem; padding-inline: 1.5rem; }
+  [data-layout='sidebar'] .guide .toc { display: none; }
+}
+
+/* עמוד הבית במבנה הצדדי: רשימה נקייה במקום ריבועים */
+[data-layout='sidebar'] .cards {
+  display: block;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+[data-layout='sidebar'] .cards li { border-bottom: 1px solid var(--border); }
+[data-layout='sidebar'] .card {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 1rem 0.25rem 1rem 2.5rem;
+}
+[data-layout='sidebar'] .card::after { top: 50%; transform: translateY(-50%); inset-inline-end: 0.5rem; font-size: 1.2rem; }
+[data-layout='sidebar'] .card:hover { background: var(--accent-soft); transform: none; }
+[dir='rtl'][data-layout='sidebar'] .card { padding: 1rem 0.75rem 1rem 2.5rem; }
+
+/* ---------- תפריט תצוגת עיצוב (רק בגרסת תצוגה) ---------- */
+.design-switcher {
+  position: fixed;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  z-index: 50;
+  display: grid;
+  gap: 0.35rem;
+  width: 15rem;
+  padding: 0.7rem 0.8rem;
+  font-size: 0.85rem;
+  background: #fff;
+  color: #222;
+  border: 2px solid #222;
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgb(0 0 0 / 20%);
+}
+.design-switcher label { display: grid; gap: 0.1rem; }
+.design-switcher select { min-height: 2rem; padding: 0.15rem 0.4rem; font-size: 0.85rem; }
+
+@media print {
+  .sidebar, .menu, .pager, .design-switcher, .note-toggle { display: none !important; }
+  .page-layout { display: block !important; }
+}
+
+/* עמוד הבית: פתיח עם רקע צבעוני עדין */
+.page-home .hero {
+  margin: 0 0 1.75rem;
+  padding: 1.75rem 1.4rem 1.6rem;
+  border-radius: calc(var(--radius) + 4px);
+  background: linear-gradient(160deg, var(--accent-soft) 0%, var(--note) 100%);
+}
+/* צ׳קליסט: סטטוס בשורה אחת עם התווית, כדי לקצר כל כרטיס */
+.field-status { grid-template-columns: auto 1fr; align-items: center; gap: 0.6rem; }
+.field-status > span { font-size: 0.95rem; }
+@media print { .page-home .hero { background: none; padding: 0; } }

@@ -6,6 +6,13 @@ import { readFileSync } from 'node:fs';
 const PAGES = ['', 'levaya/', 'shiva/', 'shloshim/', 'siddurim/', 'chatuna/', 'havhara/'];
 const KEY = 'shelo-tedu';
 
+// פותח את שדה ההערה במשימה (אם עוד אין בה הערה, השדה מוסתר מאחורי כפתור)
+async function noteOf(card) {
+  const toggle = card.getByRole('button', { name: '+ הוספת הערה' });
+  if (await toggle.count()) await toggle.click();
+  return card.getByLabel('הערות');
+}
+
 test.describe('כל העמודים', () => {
   for (const path of PAGES) {
     test(`עמוד /${path} נטען תקין`, async ({ page }) => {
@@ -141,7 +148,7 @@ test.describe('צ׳קליסט הבירוקרטיה', () => {
     expect(await page.locator('#tasks-app').innerText()).not.toMatch(/\b(null|undefined)\b/);
     const c = card(page, 'להפיק תעודת פטירה');
     await c.getByLabel('סטטוס').selectOption('waiting');
-    await c.getByLabel('הערות').fill('ביקשנו באתר, מחכים');
+    await (await noteOf(c)).fill('ביקשנו באתר, מחכים');
     await c.getByLabel('הערות').blur();
     await page.reload();
     const c2 = card(page, 'להפיק תעודת פטירה');
@@ -151,7 +158,7 @@ test.describe('צ׳קליסט הבירוקרטיה', () => {
 
   test('הערה נשמרת גם בלי לצאת מהשדה (לפני סגירת העמוד)', async ({ page }) => {
     await page.goto('siddurim/');
-    await card(page, 'לבדוק עדכון מחזיק בארנונה').getByLabel('הערות').fill('התקשרנו לעירייה');
+    await (await noteOf(card(page, 'לבדוק עדכון מחזיק בארנונה'))).fill('התקשרנו לעירייה');
     await page.waitForTimeout(700);
     await page.reload();
     await expect(card(page, 'לבדוק עדכון מחזיק בארנונה').getByLabel('הערות')).toHaveValue('התקשרנו לעירייה');
@@ -194,7 +201,7 @@ test.describe('צ׳קליסט הבירוקרטיה', () => {
 
   test('ייצוא CSV כולל הערות ומשימות אישיות', async ({ page }) => {
     await page.goto('siddurim/');
-    await card(page, 'להפיק תעודת פטירה').getByLabel('הערות').fill('הערה לבדיקה, עם פסיק');
+    await (await noteOf(card(page, 'להפיק תעודת פטירה'))).fill('הערה לבדיקה, עם פסיק');
     await card(page, 'להפיק תעודת פטירה').getByLabel('הערות').blur();
     await page.getByLabel('משימה', { exact: true }).fill('משימה אישית לייצוא');
     await page.getByRole('button', { name: 'הוספה לרשימה' }).click();
@@ -250,7 +257,7 @@ test.describe('צ׳קליסט הבירוקרטיה', () => {
     const requests = [];
     page.on('request', (r) => requests.push(r));
     await page.goto('siddurim/');
-    await card(page, 'להפיק תעודת פטירה').getByLabel('הערות').fill('סוד-משפחתי-12345');
+    await (await noteOf(card(page, 'להפיק תעודת פטירה'))).fill('סוד-משפחתי-12345');
     await card(page, 'להפיק תעודת פטירה').getByLabel('הערות').blur();
     await page.waitForTimeout(600);
     for (const r of requests) {

@@ -14,6 +14,13 @@ const site = readJson('site.json');
 const checklists = readJson('checklists.json');
 const tasksData = readJson('tasks.json');
 
+// עיצוב: palette (צבעים), layout (cards = כרטיסים במרכז, sidebar = ניווט בצד), headings (sans / serif).
+const DESIGN = { palette: 'forest', layout: 'cards', headings: 'sans', ...(site.design || {}) };
+// PREVIEW=1: בונה את כל האפשרויות יחד עם תפריט החלפה, לבחירת עיצוב בלבד. לא לפרסום.
+const PREVIEW = !!process.env.PREVIEW;
+const showSidebar = PREVIEW || DESIGN.layout === 'sidebar';
+const showCards = PREVIEW || DESIGN.layout === 'cards';
+
 // סדר הדפים: המפתח הוא שם הקובץ ב-content וגם הנתיב באתר.
 const PAGES = ['home', 'levaya', 'shiva', 'shloshim', 'siddurim', 'chatuna', 'havhara'];
 const GUIDES = ['levaya', 'shiva', 'shloshim', 'siddurim'];
@@ -80,7 +87,10 @@ function createMarked(headings) {
         return `<h${depth} id="${escapeHtml(id)}">${inner}</h${depth}>\n`;
       },
       link({ href: target, title, tokens }) {
-        const text = this.parser.parseInline(tokens);
+        let text = this.parser.parseInline(tokens);
+        // "כותרת · מקור" – המקור מוצג בצבע משני
+        const dot = text.indexOf(' · ');
+        if (dot > 0) text = `${text.slice(0, dot)}<span class="link-src"> · ${text.slice(dot + 3)}</span>`;
         const h = href(target);
         const t = title ? ` title="${escapeHtml(title)}"` : '';
         if (isExternal(h)) {
@@ -151,7 +161,7 @@ function renderDownload() {
   const kb = Math.max(1, Math.round(statSync(join(ROOT, 'public', file)).size / 1024));
   return `<div class="download">
   <figure class="download-preview">
-    <img src="${BASE}images/modaat-evel-preview.webp" alt="תצוגה מקדימה של תבנית מודעת האבל" width="440" height="570" loading="lazy">
+    <img src="${BASE}images/modaat-evel-preview.webp" alt="תצוגה מקדימה של תבנית מודעת האבל" width="800" height="566" loading="lazy">
     <figcaption><strong>תצוגה מקדימה</strong> · תבנית עם שדות לשם, פרטי הלוויה ופרטי השבעה.</figcaption>
   </figure>
   <a class="button download-link" href="${BASE}${file}" download="תבנית מודעת אבל.docx"><strong>להורדה ולעריכה ב־Word</strong><span class="sep"> · </span><span>תבנית מודעת אבל</span> <span class="file-meta">(<bdi dir="ltr">DOCX, ${kb}KB</bdi>)</span></a>
@@ -189,8 +199,55 @@ function renderTasks() {
 </div>`;
 }
 
+// ---------- ניווט צדדי ----------
+function sideNav(key, headings, { withToc }) {
+  const guides = GUIDES.map((g) => {
+    const current = g === key;
+    const toc = withToc && current && headings?.length
+      ? `<ul class="sidenav-toc" role="list">${headings.map((h) => `<li><a href="#${escapeHtml(h.id)}">${h.text}</a></li>`).join('')}</ul>`
+      : '';
+    return `<li${current ? ' class="is-current"' : ''}><a href="${pageUrl(g)}"${current ? ' aria-current="page"' : ''}>${escapeHtml(pages[g].meta.title)}</a>${toc}</li>`;
+  }).join('');
+  const more = ['chatuna', 'havhara']
+    .map((p) => `<li><a href="${pageUrl(p)}"${p === key ? ' aria-current="page"' : ''}>${escapeHtml(pages[p].meta.title)}</a></li>`)
+    .join('');
+  return `<p class="sidenav-label">המדריכים</p>
+<ol class="sidenav-list" role="list">${guides}</ol>
+<ul class="sidenav-list sidenav-more" role="list">${more}</ul>`;
+}
+
+function pager(key) {
+  const i = GUIDES.indexOf(key);
+  if (i < 0) return '';
+  const prev = GUIDES[i - 1];
+  const next = GUIDES[i + 1];
+  const link = (g, cls, label) =>
+    g ? `<a class="pager-link ${cls}" href="${pageUrl(g)}"><span class="pager-label">${label}</span><span class="pager-title">${escapeHtml(pages[g].meta.title)}</span></a>` : '<span></span>';
+  return `<nav class="pager" aria-label="מעבר בין המדריכים">${link(prev, 'pager-prev', 'המדריך הקודם')}${link(next, 'pager-next', 'המדריך הבא')}</nav>`;
+}
+
+const PREVIEW_SWITCHER = `<div class="design-switcher" dir="rtl">
+<strong>תצוגת עיצוב</strong>
+<label>צבעים <select data-attr="palette"><option value="forest">ירוק יער (הנוכחי)</option><option value="sage">מרווה ואפרסק</option><option value="terracotta">טרקוטה חמים</option><option value="blue">כחול רגוע</option></select></label>
+<label>מבנה <select data-attr="layout"><option value="cards">כרטיסים במרכז (הנוכחי)</option><option value="sidebar">ניווט בצד</option></select></label>
+<label>כותרות <select data-attr="headings"><option value="sans">גופן רגיל</option><option value="serif">גופן עם סריף</option></select></label>
+</div>
+<script>
+(() => {
+  const root = document.documentElement;
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem('design-preview') || '{}'); } catch {}
+  document.querySelectorAll('.design-switcher select').forEach((s) => {
+    const a = s.dataset.attr;
+    if (saved[a]) root.dataset[a] = saved[a];
+    s.value = root.dataset[a];
+    s.onchange = () => { root.dataset[a] = s.value; saved[a] = s.value; try { localStorage.setItem('design-preview', JSON.stringify(saved)); } catch {} };
+  });
+})();
+</script>`;
+
 // ---------- תבנית העמוד ----------
-function layout({ key, meta, main, hasScript }) {
+function layout({ key, meta, main, hasScript, headings = [] }) {
   const isHome = key === 'home';
   const title = isHome ? `${site.name} | ${meta.tagline}` : `${meta.title} | ${site.name}`;
   const canonical = site.siteUrl.replace(/\/$/, '/') + (isHome ? '' : `${key}/`);
@@ -200,7 +257,7 @@ function layout({ key, meta, main, hasScript }) {
     return `<li><a href="${pageUrl(g)}"${g === key ? ' aria-current="page"' : ''}>${escapeHtml(m.title)}</a></li>`;
   }).join('');
   return `<!doctype html>
-<html lang="he" dir="rtl">
+<html lang="he" dir="rtl" data-palette="${DESIGN.palette}" data-layout="${DESIGN.layout}" data-headings="${DESIGN.headings}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -222,19 +279,23 @@ function layout({ key, meta, main, hasScript }) {
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="icon" href="${BASE}favicon.svg" type="image/svg+xml">
 <link rel="preload" href="${BASE}fonts/assistant-hebrew.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="${BASE}css/site.css?v=${BUILD_ID}">
-</head>
+${DESIGN.headings === 'serif' && !PREVIEW ? `<link rel="preload" href="${BASE}fonts/frank-ruhl-hebrew.woff2" as="font" type="font/woff2" crossorigin>\n` : ''}<link rel="stylesheet" href="${BASE}css/site.css?v=${BUILD_ID}">
+${PREVIEW ? '<meta name="robots" content="noindex">\n' : ''}</head>
 <body class="page-${key}">
 <a class="skip-link" href="#main">דילוג לתוכן</a>
 <header class="site-header">
   <div class="wrap header-inner">
     <a class="brand" href="${BASE}"${isHome ? ' aria-current="page"' : ''}>${escapeHtml(site.name)}</a>
-    <a class="header-contact" href="${mail}">יצירת קשר</a>
+    <div class="header-actions">
+      <a class="header-contact" href="${mail}">יצירת קשר</a>
+${showSidebar ? `      <details class="menu"><summary>תפריט</summary><nav class="menu-panel sidenav" aria-label="ניווט באתר">${sideNav(key, headings, { withToc: true })}</nav></details>\n` : ''}    </div>
   </div>
 </header>
-<main id="main" class="wrap" tabindex="-1">
+<div class="page-layout">
+${showSidebar ? `<div class="sidebar"><nav class="sidenav" aria-label="ניווט באתר">${sideNav(key, headings, { withToc: true })}</nav></div>\n` : ''}<main id="main" class="wrap" tabindex="-1">
 ${main}
 </main>
+</div>
 <footer class="site-footer">
   <div class="wrap">
     <nav aria-label="המדריכים">
@@ -245,6 +306,8 @@ ${main}
   </div>
 </footer>
 ${hasScript ? `<script type="module" src="${BASE}js/app.js?v=${BUILD_ID}"></script>` : ''}
+${showSidebar ? `<script type="module" src="${BASE}js/nav.js?v=${BUILD_ID}"></script>` : ''}
+${PREVIEW ? PREVIEW_SWITCHER : ''}
 </body>
 </html>
 `;
@@ -272,9 +335,10 @@ function renderPage(key) {
           .map((h) => `<li><a href="#${escapeHtml(h.id)}">${h.text}</a></li>`)
           .join('')}</ul></nav>`
       : '';
-    const more = GUIDES.includes(key)
-      ? `<nav class="more-guides" aria-labelledby="more-title"><h2 id="more-title">מדריכים נוספים</h2>${renderCards(homeCardsSource, key + '/')}</nav>`
-      : '';
+    const more = !GUIDES.includes(key)
+      ? ''
+      : (showCards ? `<nav class="more-guides" aria-labelledby="more-title"><h2 id="more-title">מדריכים נוספים</h2>${renderCards(homeCardsSource, key + '/')}</nav>` : '') +
+        (showSidebar ? pager(key) : '');
     main = `<article class="guide">
 <header class="guide-header"><h1>${escapeHtml(meta.title)}</h1>${intro}</header>
 ${toc}
@@ -282,7 +346,7 @@ ${rest}
 </article>
 ${more}`;
   }
-  return layout({ key, meta, main, hasScript });
+  return layout({ key, meta, main, hasScript, headings });
 }
 
 // ---------- הרצה ----------
@@ -302,6 +366,9 @@ mkdirSync(join(DIST, 'fonts'), { recursive: true });
 const fontDir = join(ROOT, 'node_modules/@fontsource-variable/assistant/files');
 cpSync(join(fontDir, 'assistant-hebrew-wght-normal.woff2'), join(DIST, 'fonts/assistant-hebrew.woff2'));
 cpSync(join(fontDir, 'assistant-latin-wght-normal.woff2'), join(DIST, 'fonts/assistant-latin.woff2'));
+const serifDir = join(ROOT, 'node_modules/@fontsource-variable/frank-ruhl-libre/files');
+cpSync(join(serifDir, 'frank-ruhl-libre-hebrew-wght-normal.woff2'), join(DIST, 'fonts/frank-ruhl-hebrew.woff2'));
+cpSync(join(serifDir, 'frank-ruhl-libre-latin-wght-normal.woff2'), join(DIST, 'fonts/frank-ruhl-latin.woff2'));
 
 for (const key of PAGES) {
   const outDir = key === 'home' ? DIST : join(DIST, key);

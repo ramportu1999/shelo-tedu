@@ -359,14 +359,34 @@ function taskCard(row) {
   });
   textarea.value = row.note;
 
+  // שדה ההערה מוצג מיד רק אם כבר יש הערה; אחרת כפתור קטן פותח אותו (מקצר את הרשימה בנייד).
+  const noteField = h('label', { class: 'field', hidden: !row.note }, h('span', {}, 'הערות'), textarea);
+  const noteToggle = row.note
+    ? null
+    : h(
+        'button',
+        {
+          type: 'button',
+          class: 'note-toggle button-quiet',
+          'aria-describedby': textId,
+          onclick: () => {
+            noteToggle.remove();
+            noteField.hidden = false;
+            textarea.focus();
+          },
+        },
+        '+ הוספת הערה',
+      );
+
   const parts = [
     h('p', { class: 'task-text', id: textId }, row.text, row.kind === 'custom' ? h('span', { class: 'tag' }, 'משימה שלי') : null),
     row.when ? h('p', { class: 'task-when' }, h('span', { class: 'label' }, 'מתי כדאי לבדוק?'), ' ', row.when) : null,
     h(
       'div',
       { class: 'task-fields' },
-      h('label', { class: 'field' }, h('span', {}, 'סטטוס'), select),
-      h('label', { class: 'field' }, h('span', {}, 'הערות'), textarea),
+      h('label', { class: 'field field-status' }, h('span', {}, 'סטטוס'), select),
+      noteToggle,
+      noteField,
     ),
     statusPrint,
     notePrint,
