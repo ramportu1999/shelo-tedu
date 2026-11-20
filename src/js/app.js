@@ -2,7 +2,6 @@
 import * as S from './store.js';
 
 const SIDDURIM = 'siddurim';
-const PRIVACY_HREF = '../havhara/#פרטיות';
 
 let store;
 let state;
@@ -124,9 +123,8 @@ function initSimpleChecklist(section) {
 
   const footer = section.querySelector('[data-enhance]');
   if (!footer) return;
-  const note = store.available
-    ? h('p', {}, 'הסימונים נשמרים בדפדפן הזה בלבד. ', h('a', { href: PRIVACY_HREF }, 'מה זה אומר?'))
-    : h('p', {}, 'לא ניתן לשמור את הסימונים בדפדפן הזה.');
+  // הודעה רק כשהשמירה חסומה בדפדפן; במצב רגיל אין צורך להסביר.
+  const note = store.available ? h('span') : h('p', {}, 'לא ניתן לשמור את הסימונים בדפדפן הזה.');
   const clear = h(
     'button',
     {
@@ -195,12 +193,6 @@ function initTasks(app) {
   const panel = h(
     'div',
     { class: 'tasks-panel' },
-    h(
-      'p',
-      { class: 'storage-note' },
-      'ההתקדמות נשמרת רק בדפדפן הזה ובמכשיר הזה, ולא נשלחת לשום מקום. היא לא עוברת בין מכשירים, וניקוי נתוני הגלישה או גלישה בחלון פרטי עלולים למחוק אותה. כדאי לשמור מדי פעם קובץ גיבוי. ',
-      h('a', { href: PRIVACY_HREF }, 'עוד על השמירה'),
-    ),
     h('p', { class: 'notice', 'data-storage-problem': true, hidden: true }),
     ui.progress,
     h(
