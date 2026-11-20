@@ -4,3 +4,8 @@ test-results/
 playwright-report/
 *.zip
 .DS_Store
+
+# תמונות מקור אישיות (עם מטא-דאטה) לא עולות למאגר; באתר משתמשים בגרסה המעובדת שב-public/images
+/*.jpg
+/*.jpeg
+/*.heic

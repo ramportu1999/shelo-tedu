@@ -92,6 +92,28 @@ test('חיצים דקורטיביים לא נקראים בקורא מסך', asyn
   await expect(page.locator('main .cards a.card').first()).toHaveAccessibleName('הלוויה מסמכים, תיאום קבורה, תכנון הטקס ומודעת אבל לעריכה.');
 });
 
+test('ניווט: תפריט בנייד או ניווט צדדי במחשב, ומעבר בין מדריכים', async ({ page, isMobile }) => {
+  await page.goto('shiva/');
+  if (isMobile) {
+    await page.getByText('תפריט', { exact: true }).click();
+    await page.locator('.menu-panel').getByRole('link', { name: 'שלושים וגילוי מצבה' }).click();
+  } else {
+    await expect(page.locator('.sidebar .sidenav-toc a').first()).toBeVisible();
+    await page.locator('.sidebar').getByRole('link', { name: 'שלושים וגילוי מצבה' }).click();
+  }
+  await expect(page.locator('h1')).toHaveText('שלושים וגילוי מצבה');
+  await page.getByRole('link', { name: /המדריך הבא/ }).click();
+  await expect(page.locator('h1')).toHaveText('מה צריך להסדיר אחרי הפטירה?');
+});
+
+test('התמונה ב"קצת עליי" נטענת ויש לה תיאור', async ({ page }) => {
+  await page.goto('');
+  const img = page.locator('.about-photo');
+  await img.scrollIntoViewIfNeeded();
+  await expect(img).toHaveAttribute('alt', /רני שגיא/);
+  expect(await img.evaluate((i) => i.complete && i.naturalWidth > 0)).toBe(true);
+});
+
 test('קישור עמוק לסעיף מגיע לסעיף', async ({ page }) => {
   await page.goto('siddurim/#חשבונות-בנק');
   await expect(page.locator('[id="חשבונות-בנק"]')).toBeInViewport();

@@ -200,10 +200,19 @@ main { padding-top: 2rem; }
   border-radius: var(--radius);
 }
 .about h2 { margin-top: 0; }
-.about.has-photo { display: grid; gap: 1rem; }
-.about-photo { width: 8rem; height: 8rem; border-radius: 50%; object-fit: cover; }
+.about.has-photo { display: grid; gap: 1.1rem; }
+.about-photo {
+  width: 100%;
+  max-width: 15rem;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
 @media (min-width: 40rem) {
-  .about.has-photo { grid-template-columns: auto 1fr; align-items: start; gap: 1.5rem; }
+  .about.has-photo { grid-template-columns: 12rem 1fr; align-items: start; gap: 1.75rem; }
+  .about.has-photo .about-photo { margin-top: 0.4rem; }
 }
 
 .secondary-link {

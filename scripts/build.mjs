@@ -151,7 +151,7 @@ let homeCardsSource = '';
 
 function renderAbout(html) {
   const photo = site.aboutPhoto
-    ? `<img class="about-photo" src="${escapeHtml(BASE + site.aboutPhoto)}" alt="${escapeHtml(site.aboutPhotoAlt)}" width="160" height="160" loading="lazy">`
+    ? `<img class="about-photo" src="${escapeHtml(BASE + site.aboutPhoto)}" alt="${escapeHtml(site.aboutPhotoAlt)}" width="480" height="600" loading="lazy">`
     : '';
   return `<section class="about${photo ? ' has-photo' : ''}" aria-labelledby="קצת-עליי">${photo}<div class="about-text">${html}</div></section>`;
 }
