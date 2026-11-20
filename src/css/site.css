@@ -1,0 +1,488 @@
+/* שלא תדעו – עיצוב האתר. מינימליסטי, בהיר, מעט חמים. מובייל תחילה. */
+
+@font-face {
+  font-family: 'Assistant';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  src: url('../fonts/assistant-hebrew.woff2') format('woff2');
+  unicode-range: U+0307-0308, U+0590-05FF, U+200C-2010, U+20AA, U+25CC, U+FB1D-FB4F;
+}
+@font-face {
+  font-family: 'Assistant';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  src: url('../fonts/assistant-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  --bg: #f8f4ee;
+  --surface: #ffffff;
+  --text: #2b2724;
+  --muted: #5e564f;
+  --accent: #3b6657;
+  --accent-strong: #2c4f43;
+  --accent-soft: #e5eee9;
+  --border: #e3d9cd;
+  --note: #f2eadf;
+  --focus: #1d5fbf;
+  --radius: 14px;
+  --shadow: 0 1px 2px rgb(60 45 30 / 6%), 0 2px 10px rgb(60 45 30 / 5%);
+  --wrap: 44rem;
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: 1rem;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Assistant', 'Segoe UI', Arial, 'Noto Sans Hebrew', sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.7;
+  overflow-wrap: break-word;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: 1.125rem;
+}
+
+h1, h2, h3 { line-height: 1.25; font-weight: 700; color: var(--text); }
+h1 { font-size: clamp(1.9rem, 6vw, 2.6rem); margin: 0 0 0.75rem; }
+h2 { font-size: 1.45rem; margin: 2.75rem 0 0.75rem; }
+h3 { font-size: 1.15rem; margin: 1.75rem 0 0.5rem; }
+p { margin: 0 0 1rem; }
+ul, ol { padding-inline-start: 1.25rem; }
+li { margin-bottom: 0.4rem; }
+strong { font-weight: 700; }
+
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+a:hover { color: var(--accent-strong); text-decoration-thickness: 2px; }
+a.external::after {
+  content: '↗';
+  display: inline-block;
+  margin-inline-start: 0.2em;
+  font-size: 0.8em;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+main:focus { outline: none; }
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  inset-inline-start: 1rem;
+  top: -4rem;
+  background: var(--surface);
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  z-index: 10;
+  box-shadow: var(--shadow);
+}
+.skip-link:focus { top: 1rem; }
+
+/* ---------- כותרת ותחתית ---------- */
+.site-header { border-bottom: 1px solid var(--border); background: var(--bg); }
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.5rem;
+}
+.brand {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--text);
+  text-decoration: none;
+  padding-block: 0.5rem;
+}
+.header-contact { font-size: 1rem; padding-block: 0.5rem; }
+
+.site-footer {
+  margin-top: 4rem;
+  padding: 2rem 0 3rem;
+  border-top: 1px solid var(--border);
+  font-size: 1rem;
+  color: var(--muted);
+}
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+}
+.footer-links a, .footer-legal a { display: inline-block; padding-block: 0.3rem; }
+.footer-contact a { display: inline-block; direction: ltr; overflow-wrap: anywhere; }
+[aria-current='page'] { font-weight: 700; text-decoration: none; color: var(--text); }
+
+/* ---------- עמוד הבית ---------- */
+main { padding-top: 2rem; }
+.hero { margin: 1rem 0 1.75rem; }
+.hero h1 { font-size: clamp(2.4rem, 10vw, 3.4rem); margin-bottom: 0.4rem; letter-spacing: -0.01em; }
+.tagline { font-size: 1.3rem; color: var(--muted); margin: 0; }
+
+.cards {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0;
+  display: grid;
+  gap: 0.75rem;
+}
+@media (min-width: 40rem) { .cards { grid-template-columns: 1fr 1fr; } }
+.cards li { margin: 0; }
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  height: 100%;
+  padding: 1.1rem 1.2rem 1.15rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  text-decoration: none;
+  color: var(--text);
+  position: relative;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.card::after {
+  content: '←';
+  position: absolute;
+  inset-inline-end: 1.1rem;
+  top: 1.05rem;
+  color: var(--accent);
+  font-weight: 700;
+}
+.card:hover { border-color: var(--accent); color: var(--text); }
+@media (prefers-reduced-motion: no-preference) { .card:hover { transform: translateY(-1px); } }
+.card-title { font-weight: 700; font-size: 1.2rem; color: var(--accent-strong); padding-inline-end: 1.5rem; }
+.card-desc { color: var(--muted); font-size: 1rem; line-height: 1.5; }
+
+.about {
+  margin-top: 3rem;
+  padding: 1.5rem 1.25rem 0.5rem;
+  background: var(--note);
+  border-radius: var(--radius);
+}
+.about h2 { margin-top: 0; }
+.about.has-photo { display: grid; gap: 1rem; }
+.about-photo { width: 8rem; height: 8rem; border-radius: 50%; object-fit: cover; }
+@media (min-width: 40rem) {
+  .about.has-photo { grid-template-columns: auto 1fr; align-items: start; gap: 1.5rem; }
+}
+
+.secondary-link {
+  margin-top: 1.5rem;
+  padding: 1rem 1.25rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  font-size: 1.05rem;
+}
+.secondary-link p { margin: 0; }
+.secondary-link a { font-weight: 700; }
+
+/* ---------- מדריכים ---------- */
+.guide-header { margin-bottom: 1.5rem; }
+.guide-header p { font-size: 1.2rem; }
+
+.toc {
+  margin: 1.5rem 0 2rem;
+  padding: 1rem 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.toc-title { font-size: 1rem; margin: 0 0 0.5rem; color: var(--muted); }
+.toc ul { list-style: none; padding: 0; margin: 0; columns: 1; }
+@media (min-width: 40rem) { .toc ul { columns: 2; column-gap: 2rem; } }
+.toc li { margin: 0; break-inside: avoid; }
+.toc a { display: inline-block; padding-block: 0.25rem; font-size: 1.02rem; }
+
+.guide h2 { padding-top: 0.25rem; }
+
+.links {
+  margin: 0.25rem 0 1.5rem;
+}
+.links ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.4rem; }
+.links li { margin: 0; }
+.links a {
+  display: inline-block;
+  padding: 0.3rem 0;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.links-featured {
+  padding: 1rem 1.25rem;
+  background: var(--accent-soft);
+  border-radius: var(--radius);
+}
+.links-featured a { font-size: 1.1rem; }
+
+.note {
+  margin: 1.25rem 0 1.5rem;
+  padding: 1rem 1.25rem;
+  background: var(--note);
+  border-inline-start: 4px solid #c8a27c;
+  border-radius: 6px var(--radius) var(--radius) 6px;
+}
+[dir='rtl'] .note { border-radius: var(--radius) 6px 6px var(--radius); }
+.note p:last-child { margin-bottom: 0; }
+
+.notice {
+  padding: 0.85rem 1.1rem;
+  background: #fff6e0;
+  border: 1px solid #ecd9a6;
+  border-radius: 10px;
+  font-size: 1rem;
+}
+
+.pending {
+  position: relative;
+  margin: 2rem 0;
+  padding: 0.5rem 1.25rem 0.25rem;
+  border: 2px dashed #d39b5a;
+  border-radius: var(--radius);
+}
+.pending-label {
+  display: inline-block;
+  margin: 0.5rem 0 0;
+  padding: 0 0.6rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: #fbe9d3;
+  border-radius: 999px;
+}
+.pending h2 { margin-top: 0.75rem; }
+
+/* כפתורים */
+.button, button, input[type='file']::file-selector-button {
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 10px;
+  border: 1px solid var(--accent);
+  background: var(--surface);
+  color: var(--accent-strong);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  line-height: 1.3;
+}
+.button:hover, button:hover { background: var(--accent-soft); }
+.button-primary, button.button-primary { background: var(--accent); color: #fff; }
+.button-primary:hover, button.button-primary:hover { background: var(--accent-strong); color: #fff; }
+.button-quiet { border-color: var(--border); color: var(--muted); }
+.button-danger { border-color: #b4483a; color: #8d2f23; }
+.button-danger:hover { background: #fbecea; }
+
+/* הורדת מודעת אבל */
+.download {
+  display: grid;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+@media (min-width: 40rem) {
+  .download { grid-template-columns: 11rem 1fr; align-items: center; }
+}
+.download-preview { margin: 0; display: grid; gap: 0.5rem; }
+.download-preview img {
+  width: 100%;
+  max-width: 11rem;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+}
+.download-preview figcaption { font-size: 0.95rem; color: var(--muted); line-height: 1.5; }
+@media (min-width: 40rem) {
+  .download-preview { display: contents; }
+  .download-preview figcaption { grid-column: 2; grid-row: 2; }
+  .download-link { grid-column: 2; grid-row: 1; justify-self: start; }
+  .download-preview img { grid-row: 1 / span 2; }
+}
+.download-link {
+  background: var(--accent);
+  color: #fff;
+  flex-wrap: wrap;
+  text-align: center;
+  padding: 0.7rem 1.2rem;
+}
+.download-link:hover { background: var(--accent-strong); color: #fff; }
+.file-meta { font-weight: 400; font-size: 0.9rem; opacity: 0.9; }
+@media (max-width: 39.99rem) {
+  .download-link { flex-direction: column; gap: 0; }
+  .download-link .sep { display: none; }
+}
+
+/* ---------- צ׳קליסטים קצרים ---------- */
+.checklist {
+  margin: 2.5rem 0 1.5rem;
+  padding: 0.25rem 1.25rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.checklist h2 { margin-top: 1rem; }
+.checklist ul { list-style: none; padding: 0; margin: 0; }
+.checklist li {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  margin: 0;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.checklist li:last-child { border-bottom: 0; }
+.checklist input[type='checkbox'] {
+  flex: none;
+  width: 1.4rem;
+  height: 1.4rem;
+  margin: 0.2rem 0 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.checklist label { cursor: pointer; flex: 1; }
+.checklist input:checked + label { color: var(--muted); text-decoration: line-through; text-decoration-color: rgb(94 86 79 / 50%); }
+.checklist-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.75rem;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+.checklist-footer p { margin: 0; }
+.checklist-footer button { min-height: 2.5rem; font-size: 0.95rem; }
+
+/* ---------- צ׳קליסט הבירוקרטיה ---------- */
+.tasks { margin-top: 1rem; }
+.task-list { list-style: none; padding: 0; margin: 1rem 0; display: grid; gap: 0.75rem; }
+.task-card {
+  margin: 0;
+  padding: 1rem 1.1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-inline-start: 5px solid #cbbfb0;
+  border-radius: var(--radius);
+}
+.task-text { font-weight: 700; margin: 0 0 0.25rem; line-height: 1.45; }
+.task-when { font-size: 0.98rem; color: var(--muted); margin: 0; }
+.task-when .label { font-weight: 600; }
+.task-card[data-status='doing'] { border-inline-start-color: #d9a441; }
+.task-card[data-status='waiting'] { border-inline-start-color: #6b8fb8; }
+.task-card[data-status='done'] { border-inline-start-color: var(--accent); background: #f6faf7; }
+.task-card[data-status='na'] { border-inline-start-color: #d8d2ca; background: #faf8f5; }
+.task-card[data-status='na'] .task-text { color: var(--muted); font-weight: 600; }
+.task-card[data-status='done'] .task-text { color: var(--accent-strong); }
+
+.task-fields { display: grid; gap: 0.6rem; margin-top: 0.75rem; }
+@media (min-width: 40rem) { .task-fields { grid-template-columns: 13rem 1fr; align-items: start; } }
+.field { display: grid; gap: 0.2rem; }
+.field > span { font-size: 0.92rem; font-weight: 600; color: var(--muted); }
+select, textarea, input[type='text'] {
+  font: inherit;
+  font-size: 1rem;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid #c9bcad;
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+}
+textarea { resize: vertical; min-height: 2.75rem; line-height: 1.5; field-sizing: content; max-height: 14rem; }
+select { cursor: pointer; }
+.tag {
+  display: inline-block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0 0.55rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  margin-inline-start: 0.4rem;
+  vertical-align: middle;
+}
+.task-actions { margin-top: 0.6rem; }
+.task-actions button { min-height: 2.5rem; font-size: 0.95rem; }
+
+.tasks-panel {
+  margin: 1rem 0;
+  padding: 1rem 1.15rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.tasks-panel h3 { margin-top: 0; }
+.storage-note { font-size: 0.98rem; color: var(--muted); }
+.progress { font-weight: 700; margin: 0.5rem 0 0; }
+.controls { display: grid; gap: 0.75rem; margin-top: 0.75rem; }
+@media (min-width: 40rem) { .controls { grid-template-columns: 1fr 1fr; } }
+.empty { color: var(--muted); font-style: normal; padding: 1rem; text-align: center; }
+
+.add-task { display: grid; gap: 0.75rem; }
+.add-task button { justify-self: start; }
+.backup-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.backup-actions label.button { position: relative; }
+.backup-actions input[type='file'] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+.backup-actions label.button:focus-within { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+.print-only { display: none; }
+
+.more-guides { margin-top: 3.5rem; }
+.more-guides h2 { font-size: 1.2rem; color: var(--muted); }
+
+/* ---------- הדפסה ---------- */
+@media print {
+  body { background: #fff; font-size: 11pt; }
+  .site-header, .site-footer, .skip-link, .toc, .more-guides, .tasks-panel, .task-actions,
+  .checklist-footer, .no-print, .download-link { display: none !important; }
+  .task-fields { display: none; }
+  .print-only { display: block; }
+  .task-card { break-inside: avoid; border: 1px solid #999; border-inline-start-width: 4px; padding: 0.4rem 0.6rem; }
+  .task-list { gap: 0.3rem; }
+  a.external::after { content: ''; }
+  .wrap { max-width: none; }
+}

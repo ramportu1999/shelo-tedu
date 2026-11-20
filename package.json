@@ -1,0 +1,25 @@
+{
+  "name": "shelo-tedu",
+  "private": true,
+  "version": "1.0.0",
+  "description": "שלא תדעו – אתר סטטי בעברית להתארגנות מעשית אחרי מוות של אדם קרוב",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/build.mjs && node scripts/serve.mjs",
+    "serve": "node scripts/serve.mjs",
+    "test": "npm run build && node --test \"tests/unit/*.test.mjs\" && playwright test",
+    "test:unit": "node --test \"tests/unit/*.test.mjs\"",
+    "test:e2e": "playwright test",
+    "check:links": "node scripts/check-links.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@fontsource-variable/assistant": "^5.3.0",
+    "@playwright/test": "^1.65.1",
+    "marked": "^18.2.1"
+  }
+}

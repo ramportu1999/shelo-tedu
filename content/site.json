@@ -1,0 +1,8 @@
+{
+  "_הסבר": "הגדרות כלליות של האתר. contactEmail מופיע בכותרת התחתונה. aboutPhoto: נתיב לתמונה של רני בתוך public/images, או null כדי לא להציג תמונה.",
+  "name": "שלא תדעו",
+  "contactEmail": "runny.sagi@gmail.com",
+  "aboutPhoto": null,
+  "aboutPhotoAlt": "רני שגיא",
+  "siteUrl": "https://ramportu1999.github.io/shelo-tedu/"
+}
